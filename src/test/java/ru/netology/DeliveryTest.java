@@ -7,9 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 
 import java.time.Duration;
+import java.time.chrono.Chronology;
 
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Selenide.$;
@@ -26,6 +29,7 @@ class DeliveryTest {
 
     @Test
     void shouldAcceptInformation() {
+
         $("[data-test-id=city] input").setValue(DataHelper.getNewCity());
         $("[data-test-id='date'] input")
                 .sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
@@ -35,9 +39,9 @@ class DeliveryTest {
         $("[data-test-id='phone'] input").setValue(DataHelper.getNewPhoneNumber());
         $("[data-test-id=agreement]").click();
         $$("button").get(1).click();
-        $(withText("Встреча успешно"))
-                .shouldBe(visible, Duration.ofSeconds(15));
-        $(withText(dateFirst))
+        $(byText("Запланировать")).click();
+        $("[data-test-id='success-notification'] .notification__content")
+                .shouldHave(text("Встреча успешно запланирована на " + dateFirst))
                 .shouldBe(visible);
         $("[data-test-id='date'] input")
                 .sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
@@ -46,9 +50,10 @@ class DeliveryTest {
         $$("button").get(1).click();
         $(withText("У вас уже запланирована встреча на другую дату."))
                 .shouldBe(visible, Duration.ofSeconds(15));
-        $(withText("Перепланировать")).click();
-        $(withText("Встреча успешно ")).shouldBe(visible);
-        $(withText(dateSecond)).shouldBe(visible);
+        $(byText("Запланировать")).click();
+        $("[data-test-id='replan-notification'] .notification__content")
+                .shouldHave(text("У вас уже запланирована встреча на другую дату. Перепланировать?"))
+                .shouldBe(visible);
 
     }
 

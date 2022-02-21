@@ -17,14 +17,23 @@ public class DataHelper {
         return
                 LocalDate.now().plusDays(plusDays).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
+
     public static String getNewName() {
         return faker.name().fullName();
     }
-public static String getNewPhoneNumber() {
+
+    public static String getNewPhoneNumber() {
         return faker.phoneNumber().phoneNumber();
 
     }
+
     public static String getNewCity() {
         return faker.address().city();
+    }
+
+    public static String DataHelper() {
+        return LocalDate.now()
+                .plusDays(new Faker().random().nextInt(3, 100))
+                .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 }
